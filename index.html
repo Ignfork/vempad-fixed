@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VemPad: Launch a coin. Fund anyone's Venmo. · $VEMPAD</title>
+<meta name="description" content="VemPad ($VEMPAD): send a coin's creator fees to anyone on X, cashed out to Venmo. Pick their X account at launch and every trade pays them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23008cff'/%3E%3Cpath d='M9 9h4.4l2.8 9.4L19.5 9H24l-5.6 14h-4.6z' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#fff; --fg:#000; --blue:#008cff; --blue-d:#0074d4; --sky:#4bb0ff; --sky-2:#8fd0ff; --ice:#e8f4ff; --muted:#f2f4f7; --mut-fg:#5f6670; --border:#d9dee5;
+  --red:#ff4b3e; --orange:#ff8a1f; --green:#18c26a; --purple:#7a5cff; --pink:#ff5fa8; --yellow:#ffd23f; --navy:#0a1a33;
+  --r:.75rem; --font:"Mona Sans","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0}
+body{font:400 16px/1.5 var(--font);color:var(--fg);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.hd{display:flex;align-items:center;gap:22px;height:72px}
+.logo{display:flex;align-items:center;gap:10px;font:800 25px var(--font);letter-spacing:-.04em}
+.logo .mk{width:36px;height:36px;border-radius:11px;background:var(--blue);display:grid;place-items:center}
+.logo .mk svg{width:22px;height:22px}
+.logo b{color:var(--blue);font-weight:800}
+.nav{display:flex;gap:4px}
+.nav a{padding:8px 12px;border-radius:999px;font-weight:500;font-size:15px}
+.nav a:hover{background:var(--muted)}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:999px;border:1px solid transparent;background:#000;color:#fff;font:600 15px var(--font);white-space:nowrap;transition:transform .12s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.blue{background:var(--blue)}.btn.blue:hover{background:var(--blue-d)}
+.btn.ghost{background:var(--muted);color:#000}
+.btn.line{background:transparent;border-color:#000;color:#000}
+.btn.wline{background:transparent;border-color:rgba(255,255,255,.6);color:#fff}
+.btn.white{background:#fff;color:#000}
+.btn.big{padding:17px 30px;font-size:17px}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+/* hero */
+.hero{padding:34px 0 10px}
+.hero h1{font:600 clamp(44px,6.8vw,96px)/.98 var(--font);letter-spacing:-.05em;margin:0 0 26px;max-width:1100px}
+.hero h1 b{font-weight:600;color:var(--blue)}
+.hcard{position:relative;border-radius:34px;background:var(--sky);overflow:hidden;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;padding:44px}
+.hcard::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 100% 0%,rgba(255,255,255,.35),transparent 60%),radial-gradient(50% 60% at 0% 100%,rgba(0,116,212,.35),transparent 60%);pointer-events:none}
+.hcard>*{position:relative}
+.tokrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tchip{display:inline-flex;align-items:center;gap:10px;padding:6px 6px 6px 6px;border-radius:999px;background:rgba(0,0,0,.85);color:#fff;font:600 14px var(--font)}
+.tchip .t{background:#fff;color:var(--blue);padding:5px 12px;border-radius:999px;font-weight:800}
+.tchip .ca{opacity:.6;font-size:12px;margin-left:2px}
+.tchip code{font:600 13px var(--mono);margin-right:8px}
+.xchip{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#fff;font:600 14px var(--font)}
+.xchip svg{width:14px;height:14px}
+.hcard p.big{font:500 clamp(22px,2.4vw,32px)/1.25 var(--font);letter-spacing:-.02em;margin:26px 0 30px;max-width:600px}
+.hcard .cta{display:flex;gap:12px;flex-wrap:wrap}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px;padding-top:24px;border-top:1px solid rgba(0,0,0,.18)}
+.trio b{display:block;font-weight:700;font-size:17px}
+.trio span{color:rgba(0,0,0,.65);font-size:15px}
+/* phone */
+.phone{justify-self:center;width:min(360px,100%);background:#fff;border-radius:40px;padding:14px;box-shadow:0 40px 80px -30px rgba(0,40,90,.55),0 0 0 8px rgba(0,0,0,.9);position:relative}
+.phone .notch{width:110px;height:26px;border-radius:0 0 16px 16px;background:#000;margin:-14px auto 10px}
+.pscreen{border-radius:28px;overflow:hidden;background:var(--blue);color:#fff;padding:22px 20px 20px;text-align:center}
+.pscreen .who{display:flex;align-items:center;gap:10px;justify-content:center;font-weight:600}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 14px var(--font);color:#fff;flex:none}
+.pscreen small{display:block;opacity:.8;margin-top:12px;font-size:14px}
+.pscreen .amt{font:700 72px/1 var(--font);letter-spacing:-.04em;margin:8px 0 4px}
+.pscreen .sub{opacity:.85;font-size:14px}
+.claimbox{margin-top:22px;background:#fff;color:#000;border-radius:20px;padding:14px;text-align:left}
+.claimbox .row{display:flex;gap:10px;align-items:center}
+.claimbox .chk{width:34px;height:34px;border-radius:50%;background:var(--ice);display:grid;place-items:center;color:var(--blue);font-weight:800}
+.claimbox b{display:block;font-size:15px}
+.claimbox span{font-size:13px;color:var(--mut-fg)}
+.claimbox .btn{width:100%;margin-top:12px}.claimbox .btn span{color:#fff;font-size:15px}
+.foot{font-size:13px;color:var(--mut-fg);margin:16px 0 0;max-width:1000px}
+.foot a{text-decoration:underline}
+
+/* ticker */
+.tick{margin-top:30px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;background:#fff}
+.tick .tr{display:flex;gap:30px;width:max-content;padding:14px 0;animation:tk 40s linear infinite}
+.tick .it{display:flex;align-items:center;gap:10px;font-size:14px;white-space:nowrap}
+.tick .it b{font-weight:700}
+.tick .it em{font-style:normal;color:var(--mut-fg)}
+@keyframes tk{to{transform:translateX(-50%)}}
+
+/* section titles */
+section.s{padding:80px 0}
+h2{font:600 clamp(36px,4.8vw,60px)/1 var(--font);letter-spacing:-.045em;margin:0}
+.lead{color:var(--mut-fg);font-size:18px;margin:12px 0 0;max-width:620px}
+
+/* live coins */
+.lhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.lhead .sp{flex:1}
+.vtog{display:flex;background:var(--muted);border-radius:999px;padding:4px}
+.vtog button{border:0;background:none;width:38px;height:34px;border-radius:999px;font-size:15px}
+.vtog button.on{background:#000;color:#fff}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 22px;align-items:center}
+.f{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:#fff;font:600 14px var(--font)}
+.f.on{background:#000;color:#fff;border-color:#000}
+.f em{font-style:normal;background:rgba(255,255,255,.2);padding:0 7px;border-radius:999px;font-size:12px}
+.f:not(.on) em{background:var(--muted)}
+.srch{flex:1;min-width:200px;max-width:320px;padding:10px 16px;border-radius:999px;border:1px solid var(--border);outline:none}
+.srch:focus{border-color:var(--blue)}
+.samp{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--mono);color:#8a5a00;background:#fff4d0;padding:5px 10px;border-radius:999px}
+.coins{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.coin{border-radius:24px;overflow:hidden;border:1px solid var(--border);background:#fff;transition:transform .2s,box-shadow .2s;cursor:pointer;display:flex;flex-direction:column}
+.coin:hover{transform:translateY(-3px);box-shadow:0 20px 40px -24px rgba(0,60,120,.45)}
+.coin .art{aspect-ratio:1.35;position:relative;display:grid;place-items:center;overflow:hidden}
+.coin .art canvas{width:100%;height:100%;display:block}
+.coin .hol{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);border-radius:999px;padding:3px 9px;font:600 12px var(--font)}
+.coin .grad{position:absolute;top:10px;left:10px;background:#000;color:#fff;border-radius:999px;padding:3px 9px;font:600 11px var(--font)}
+.coin .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.coin h3{margin:0;font:700 18px var(--font);letter-spacing:-.02em;display:flex;justify-content:space-between;gap:8px}
+.coin h3 small{font-weight:500;color:var(--mut-fg);font-size:13px}
+.coin .tk{color:var(--blue);font-weight:700;font-size:14px}
+.coin .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}
+.coin .stats div{background:var(--muted);border-radius:12px;padding:8px 10px}
+.coin .stats b{display:block;font-size:15px}
+.coin .stats .up{color:var(--green)}.coin .stats .dn{color:var(--red)}
+.coin .rec{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut-fg);margin-top:auto}
+.coin .rec .av{width:24px;height:24px;font-size:10px}
+.coin .rec b{color:#000}
+.coin .rec .w{margin-left:auto;background:var(--ice);color:var(--blue-d);padding:3px 9px;border-radius:999px;font-weight:700}
+.bar{height:6px;border-radius:9px;background:var(--muted);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--sky))}
+.coins.list{grid-template-columns:1fr}
+.coins.list .coin{flex-direction:row;align-items:center;border-radius:18px}
+.coins.list .coin .art{width:86px;flex:none;aspect-ratio:1}
+.coins.list .coin .bd{flex-direction:row;align-items:center;gap:16px;flex-wrap:wrap}
+.coins.list .coin h3{min-width:170px;flex-direction:column;gap:0}
+.coins.list .coin .stats{grid-template-columns:repeat(2,120px)}
+.coins.list .coin .rec{margin-top:0;min-width:240px}
+.coins.list .coin .bar,.coins.list .hol,.coins.list .grad{display:none}
+.empty{padding:40px;text-align:center;color:var(--mut-fg);grid-column:1/-1}
+
+/* explore */
+.explore{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+.ex{border-radius:30px;padding:28px;min-height:440px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.ex h3{font:600 30px/1.05 var(--font);letter-spacing:-.035em;margin:auto 0 18px}
+.ex.a{background:var(--sky);}
+.ex.b{background:#0a1a33;color:#fff}
+.ex.c{background:linear-gradient(160deg,#ff8a1f,#ff4b3e)}
+.mini{background:#fff;color:#000;border-radius:20px;padding:16px;box-shadow:0 20px 40px -24px rgba(0,0,0,.4)}
+.mini .lab{font-size:13px;color:var(--mut-fg)}
+.prof{display:flex;align-items:center;gap:12px;margin-top:12px}
+.prof .av{width:46px;height:46px;font-size:18px}
+.prof b{display:block}
+.prof span{font-size:13px;color:var(--mut-fg)}
+.lock{display:inline-flex;gap:6px;align-items:center;margin-top:12px;font-size:13px;font-weight:600;color:var(--blue-d);background:var(--ice);padding:6px 10px;border-radius:999px}
+.feebars{display:flex;align-items:flex-end;gap:14px;height:150px;margin-top:10px}
+.feebars div{flex:1;border-radius:14px 14px 4px 4px;position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font:600 13px var(--font);color:#000}
+.feebars span{position:absolute;top:-24px;left:0;right:0;text-align:center;color:#fff;font-size:12px;opacity:.75}
+.lb{display:flex;flex-direction:column;gap:8px}
+.lb .r{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.92);border-radius:14px;padding:9px 12px;font-size:14px}
+.lb .r b{margin-left:auto}
+.lb .n{font:700 13px var(--mono);width:20px}
+
+/* fees + claim blocks */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.blk{border-radius:30px;padding:36px;position:relative;overflow:hidden}
+.blk .eyb{font:700 13px var(--mono);letter-spacing:.12em}
+.blk h3{font:600 clamp(26px,2.6vw,36px)/1.1 var(--font);letter-spacing:-.035em;margin:14px 0 22px;max-width:520px}
+.blk.w{background:var(--ice)}
+.blk.k{background:#000;color:#fff}
+.txn{background:#fff;color:#000;border-radius:22px;padding:18px;box-shadow:0 20px 40px -28px rgba(0,60,120,.45);max-width:420px}
+.txn .top{display:flex;align-items:center;gap:12px}
+.txn .ic{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font:800 20px var(--font)}
+.txn .top b{display:block}
+.txn .top span{font-size:13px;color:var(--mut-fg)}
+.txn .amt{margin-left:auto;font:700 22px var(--font);color:var(--green)}
+.txn .det{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px;color:var(--mut-fg)}
+.held{display:grid;gap:8px;max-width:420px}
+.held .r{display:flex;justify-content:space-between;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:14px 16px;border-radius:16px}
+.held .tot{background:var(--blue);border-color:var(--blue);font-weight:700}
+.calc{margin-top:22px;max-width:460px}
+.calc label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px}
+.calc input[type=range]{width:100%;accent-color:var(--blue)}
+.calc .out{font:700 40px var(--font);letter-spacing:-.03em;margin-top:6px}
+
+/* feed */
+.feed{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px;align-items:start}
+.fcol{border-radius:30px;background:var(--muted);padding:18px;height:520px;overflow:hidden;position:relative}
+.fcol::after{content:"";position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,var(--muted));pointer-events:none}
+.fi{display:flex;gap:12px;background:#fff;border-radius:18px;padding:14px;margin-bottom:10px;animation:fin .5s ease}
+@keyframes fin{from{opacity:0;transform:translateY(-12px)}}
+.fi .av{width:40px;height:40px}
+.fi .t{flex:1;font-size:14px}
+.fi .t b{font-weight:700}
+.fi .t p{margin:4px 0 0;font-size:15px}
+.fi .t small{color:var(--mut-fg)}
+.fi .am{font-weight:700;color:var(--green);white-space:nowrap}
+.fi .rx{display:flex;gap:6px;margin-top:8px}
+.fi .rx button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:2px 8px;font-size:12px}
+.fi .rx button.on{background:var(--ice);border-color:var(--sky);color:var(--blue-d)}
+
+/* launch builder */
+.builder{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px}
+.form{border-radius:30px;border:1px solid var(--border);padding:28px}
+.form label{display:block;font-size:13px;font-weight:600;color:var(--mut-fg);margin:14px 0 6px}
+.form label:first-child{margin-top:0}
+.inp{width:100%;border:1px solid var(--border);border-radius:14px;padding:13px 14px;font-size:16px;outline:none}
+.inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,140,255,.15)}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{width:38px;height:38px;border-radius:12px;border:2px solid transparent}
+.sw button.on{border-color:#000;box-shadow:0 0 0 2px #fff inset}
+.prevwrap{border-radius:30px;background:var(--sky);padding:28px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center}
+.prevwrap .coin{width:min(320px,100%);cursor:default}
+.prevwrap .note{font-size:13px;color:rgba(0,0,0,.7);text-align:center;max-width:340px}
+
+/* faq */
+.faq{max-width:900px;margin-top:30px}
+.q{border-top:1px solid var(--border)}
+.q:last-child{border-bottom:1px solid var(--border)}
+.q button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;border:0;background:none;padding:22px 0;font:600 20px var(--font);text-align:left;letter-spacing:-.01em}
+.q button i{font-style:normal;font-size:24px;transition:transform .25s;flex:none}
+.q.open button i{transform:rotate(45deg)}
+.q .a{max-height:0;overflow:hidden;transition:max-height .35s;color:var(--mut-fg);font-size:16px}
+.q.open .a{max-height:260px;padding-bottom:22px}
+
+/* learn + contact + built on */
+.learn{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}
+.lcard{border-radius:24px;padding:22px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;font-weight:600;font-size:19px;letter-spacing:-.02em;transition:transform .2s}
+.lcard:hover{transform:translateY(-3px)}
+.lcard span{font-size:14px;font-weight:500;opacity:.75}
+.built{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.built span{padding:12px 18px;border-radius:999px;background:var(--muted);font-weight:600}
+footer{border-top:1px solid var(--border);padding:34px 0 50px;margin-top:40px}
+.ft{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--mut-fg)}
+.ft a:hover{color:#000}
+.disc{font-size:13px;color:var(--mut-fg);margin-top:16px;max-width:900px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;z-index:90;background:#000;color:#fff;padding:12px 18px;border-radius:999px;font:600 15px var(--font);transition:.25s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:80}
+
+@media (max-width:1100px){.coins{grid-template-columns:repeat(3,1fr)}.learn{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:900px){
+  .nav{display:none}
+  .hcard{grid-template-columns:1fr;padding:28px}
+  .explore,.duo,.feed,.builder{grid-template-columns:1fr}
+  .coins{grid-template-columns:repeat(2,1fr)}
+  .ex{min-height:380px}
+}
+@media (max-width:560px){
+  .wrap{padding:0 14px}
+  .hd{gap:10px}
+  .hd .login{display:none}
+  .hcard{border-radius:26px;padding:22px}
+  .trio{grid-template-columns:1fr 1fr 1fr;gap:10px}.trio b{font-size:14px}.trio span{font-size:12px}
+  .coins{grid-template-columns:1fr 1fr;gap:10px}
+  .coin .bd{padding:10px}.coin h3{font-size:15px}.coin .stats{grid-template-columns:1fr}.coin .rec .w{display:none}
+  .coins.list .coin .stats{grid-template-columns:1fr 1fr}
+  .blk{padding:24px}
+  .learn{grid-template-columns:1fr}
+  .fcol{height:440px}
+  .tchip code,.tchip .ca{display:none}
+  .pscreen .amt{font-size:58px}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap hd">
+  <a class="logo" href="#top"><span class="mk"><svg viewBox="0 0 32 32"><path d="M9 9h4.4l2.8 9.4L19.5 9H24l-5.6 14h-4.6z" fill="#fff"/></svg></span><span>Vem<b>Pad</b></span></a>
+  <nav class="nav"><a href="#launch">Launch a coin</a><a href="#coins">Live coins</a><a href="#fees">Fees</a><a href="#claim">Claim</a><a href="#faq">How it works</a></nav>
+  <span class="sp"></span>
+  <a class="btn ghost login" href="#claim">Log in</a>
+  <button class="btn blue" type="button" id="walletBtn">Connect</button>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="wrap">
+  <h1>Launch a coin. Fund <b>anyone's</b> Venmo.</h1>
+  <div class="hcard">
+    <div>
+      <div class="tokrow"><span class="tchip"><span class="t">$VEMPAD</span><span class="ca">CA</span><code id="caTxt">launch posted on X</code></span><a class="xchip" id="xChip" href="#" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5.3 22H2.2l7.7-8.8L1.8 2h6.8l4.7 6.2L18.9 2Zm-1.2 18h1.7L7.4 3.9H5.6L17.7 20Z"/></svg><span id="xHandleTxt">Follow on X</span></a></div>
+      <p class="big">Send a coin's creator fees to anyone's Venmo. Pick their X account at launch, and every trade pays them.*</p>
+      <div class="cta"><a class="btn big" href="#launch">Launch a coin →</a><a class="btn big white" href="#claim">Claim your fees</a></div>
+      <div class="trio"><div><b>Every trade</b><span>pays a creator fee</span></div><div><b>Any X account</b><span>picked at launch</span></div><div><b>Venmo</b><span>claimed as dollars</span></div></div>
+    </div>
+    <div class="phone"><div class="notch"></div>
+      <div class="pscreen">
+        <div class="who"><span class="av" style="background:#ff5fa8">M</span>@mia_codes</div>
+        <small>Creator fees · <b id="phCoin">$CHILLGUY</b></small>
+        <div class="amt" id="phAmt">$312</div>
+        <div class="sub" id="phSub">from 1,284 trades this week</div>
+        <div class="claimbox"><div class="row"><span class="chk">✓</span><div><b>Waiting for @mia_codes</b><span>Claim to Venmo</span></div></div><button class="btn blue" type="button" id="phClaim">Claim <span id="phBtnAmt">$312</span></button></div>
+      </div>
+    </div>
+  </div>
+  <p class="foot">*Coins launch on pump.fun on Solana. The X account's owner claims the fees, and VemPad sends them on to their Venmo. Payout options and availability depend on the account and region and are confirmed at launch. VemPad isn't affiliated with PayPal, Inc., Venmo or X. <a href="#faq">See How it works</a>.</p>
+</div></section>
+
+<div class="tick" aria-hidden="true"><div class="tr" id="tick"></div></div>
+
+<section class="s" id="coins"><div class="wrap">
+  <div class="lhead"><h2>Live coins</h2><span class="samp">● SAMPLE COINS · REAL COINS AT LAUNCH</span><span class="sp"></span><div class="vtog" id="vtog"><button type="button" class="on" data-v="grid" aria-label="Grid view">▦</button><button type="button" data-v="list" aria-label="List view">☰</button></div><button class="btn ghost sm" type="button" id="refresh" aria-label="Refresh">↻</button></div>
+  <div class="filters" id="filters"></div>
+  <div class="coins" id="coinGrid"></div>
+</div></section>
+
+<section class="s" style="padding-top:20px" id="explore"><div class="wrap">
+  <h2>Explore more</h2>
+  <div class="explore">
+    <div class="ex a"><div class="mini"><div class="lab">Fee recipient</div><b style="font-size:20px;display:block;margin-top:2px">Any X account, picked at launch</b><div class="prof"><span class="av" style="background:#ff5fa8">M</span><div><b>Mia</b><span>@mia_codes</span></div></div><span class="lock">🔒 Real account · fees locked to it</span></div><h3>Pick anyone on X<br>to get the fees</h3><a class="btn" href="#launch" style="align-self:flex-start">Launch a coin</a></div>
+    <div class="ex b"><div style="font-size:13px;opacity:.7">Creator fee on every trade</div><div class="feebars"><div style="height:58%;background:var(--sky)"><span>bonding curve</span>Curve</div><div style="height:92%;background:var(--green)"><span>after graduation</span>PumpSwap</div><div style="height:74%;background:var(--yellow)"><span>forever</span>Every trade</div></div><h3>Earn on every trade,<br>forever</h3><a class="btn white" href="#fees" style="align-self:flex-start">See the fees</a></div>
+    <div class="ex c"><div class="lb" id="lb"></div><h3>Back the coins<br>people are trading</h3><a class="btn" href="#coins" style="align-self:flex-start">Open the leaderboard</a></div>
+  </div>
+  <div class="duo" id="fees">
+    <div class="blk w"><span class="eyb" style="color:var(--blue)">CREATOR FEES</span><h3>Every coin pays its creator fees to the X account picked at launch. Nobody can change it later.</h3>
+      <div class="txn"><div class="top"><span class="ic">$</span><div><b>Creator fees</b><span id="txTime">Today</span></div><span class="amt" id="txAmt">+ $450.23</span></div><div class="det"><span>Transaction details</span><span>Held for @mia_codes</span></div></div>
+      <div class="calc"><label for="volR"><span>Daily trading volume</span><span id="volV">$50,000</span></label><input type="range" id="volR" min="1000" max="1000000" step="1000" value="50000"><label for="rateR" style="margin-top:12px"><span>Creator fee rate (set by pump.fun)</span><span id="rateV">0.30%</span></label><input type="range" id="rateR" min="0.05" max="1" step="0.05" value="0.3"><div class="out" id="calcOut">$150 / day</div><div style="font-size:13px;color:var(--mut-fg)">Illustration. Fees depend on each coin's trading volume and pump.fun's current rate.</div></div>
+    </div>
+    <div class="blk k" id="claim"><span class="eyb" style="color:var(--sky)">CASH OUT TO VENMO</span><h3>The account's owner logs in with X and claims. VemPad sends the fees on to their Venmo.</h3>
+      <div class="held"><div style="font-size:14px;opacity:.7;margin-bottom:4px">Held for @mia_codes, ready for Venmo</div><div class="r"><span>Bonding curve</span><b>$250.00</b></div><div class="r"><span>PumpSwap</span><b>$307.90</b></div><div class="r tot"><span>Total held</span><b>$557.90</b></div></div>
+      <button class="btn blue big" type="button" id="claimBtn" style="margin-top:22px">Claim your fees</button>
+      <p style="font-size:13px;opacity:.6;margin:12px 0 0">Claiming opens at launch. VemPad will never ask for your Venmo password.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="s" style="padding-top:20px" id="feed-sec"><div class="wrap">
+  <h2>The fee feed</h2><p class="lead">Every trade drops a payment in someone's feed. Tap the reactions. <span class="samp">SAMPLE</span></p>
+  <div class="feed"><div class="fcol" id="feedA"></div><div class="fcol" id="feedB"></div></div>
+</div></section>
+
+<section class="s" style="padding-top:20px" id="launch"><div class="wrap">
+  <h2>Launch a coin</h2><p class="lead">Name it, pick a color, and choose the X account that gets the fees. Preview it live below.</p>
+  <div class="builder">
+    <div class="form">
+      <label for="bName">Coin name</label><input class="inp" id="bName" maxlength="24" value="Chill Guy">
+      <label for="bTick">Ticker</label><input class="inp" id="bTick" maxlength="10" value="CHILLGUY">
+      <label for="bX">X account that gets the fees</label><input class="inp" id="bX" maxlength="16" value="mia_codes">
+      <label>Card color</label><div class="sw" id="bSw"></div>
+      <label for="bBuy">Dev buy (SOL)</label><input class="inp" id="bBuy" value="0.5" inputmode="decimal">
+      <button class="btn blue big" type="button" id="bLaunch" style="width:100%;margin-top:20px">Launch on pump.fun</button>
+      <p style="font-size:13px;color:var(--mut-fg);margin:10px 0 0">Launching opens with $VEMPAD. Your preview is saved on this device.</p>
+    </div>
+    <div class="prevwrap"><div id="prevCard"></div><div class="mini" style="width:min(320px,100%)"><div class="lab">Every trade pays</div><div class="prof"><span class="av" id="pvAv" style="background:#008cff">M</span><div><b id="pvX">@mia_codes</b><span>creator fees, cashed out to Venmo</span></div></div></div><p class="note">The fee recipient is locked when the coin launches. Nobody can change it later.</p></div>
+  </div>
+</div></section>
+
+<section class="s" style="padding-top:20px" id="faq"><div class="wrap">
+  <h2>Common questions</h2>
+  <div class="faq" id="faqList"></div>
+</div></section>
+
+<section class="s" style="padding-top:20px"><div class="wrap">
+  <h2>Learn more</h2>
+  <div class="learn">
+    <a class="lcard" href="#launch" style="background:var(--sky)">Launch a coin<span>Pick the X account, set the ticker, go.</span></a>
+    <a class="lcard" href="#fees" style="background:var(--ice)">See the fees<span>How every trade pays out.</span></a>
+    <a class="lcard" href="#coins" style="background:#0a1a33;color:#fff">Open the leaderboard<span>The coins people are trading.</span></a>
+    <a class="lcard" href="#claim" style="background:linear-gradient(160deg,#ff8a1f,#ff4b3e)">Claim your fees<span>Log in with X, cash out to Venmo.</span></a>
+  </div>
+  <h2 style="margin-top:70px">Get in touch</h2><p class="lead">Questions, partnerships or a coin that should be on the board? Reach us on X.</p><div style="margin-top:18px"><a class="btn big" id="xContact" href="#" target="_blank" rel="noopener noreferrer">Message us on X ↗</a></div>
+  <h2 style="margin-top:70px">Built on</h2><div class="built"><span>Solana</span><span>pump.fun</span><span>PumpSwap</span><span>X sign-in</span></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div class="ft"><span class="logo" style="font-size:20px"><span class="mk" style="width:30px;height:30px;border-radius:9px"><svg viewBox="0 0 32 32"><path d="M9 9h4.4l2.8 9.4L19.5 9H24l-5.6 14h-4.6z" fill="#fff"/></svg></span><span>Vem<b>Pad</b></span></span><span class="sp"></span><a href="#launch">Launch</a><a href="#coins">Coins</a><a href="#fees">Fees</a><a href="#claim">Claim</a><a href="#faq">FAQ</a><a id="xFoot" href="#" target="_blank" rel="noopener noreferrer">X ↗</a></div>
+  <p class="disc">VemPad is pre-launch. Coins shown are samples. VemPad is an independent project and isn't affiliated with, endorsed by or sponsored by PayPal, Inc., Venmo or X Corp.; those names are used only to describe where payouts go and which account picks the recipient. VemPad will never ask for your Venmo or X password. Crypto is risky. Nothing here is financial advice.</p>
+</div></footer>
+<canvas class="confetti" id="confetti"></canvas>
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+/* ================= CONFIG — edit these ================= */
+var CONFIG={
+  xUrl:'https://x.com/VemPadLive',
+  xHandle:'@VemPadLive',
+  ca:'',            // $VEMPAD contract address at launch
+  launchUrl:''      // link for the Launch / Claim buttons once live
+};
+/* ====================================================== */
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function store(k,v){try{if(v===undefined)return localStorage.getItem('vp_'+k);localStorage.setItem('vp_'+k,v)}catch(e){return null}}
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},2800)}
+function money(n){return '$'+(n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':n.toFixed(0))}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+var COLORS=['#008cff','#4bb0ff','#ff4b3e','#ff8a1f','#18c26a','#7a5cff','#ff5fa8','#ffd23f','#0a1a33'];
+var EMO=['🍕','🌮','🎮','🏝️','🚗','🎂','☕','🎸','🐶','🍿','💸','🔥','🎟️','🍣','🧋','🏀'];
+
+/* ================= SAMPLE COINS ================= */
+var COINS=[
+ {n:'Chill Guy',t:'CHILLGUY',x:'mia_codes',c:'#4bb0ff',e:'😎',mc:44100,ch:12.4,vol:8200,h:184,age:'14h',w:312,g:1},
+ {n:'Pizza Fund',t:'ZA',x:'tonyslices',c:'#ff8a1f',e:'🍕',mc:18300,ch:6.1,vol:3100,h:96,age:'1d',w:88,g:0},
+ {n:'Road Trip',t:'TRIP',x:'vanlifejess',c:'#18c26a',e:'🚗',mc:12900,ch:-3.2,vol:1900,h:61,age:'2d',w:54,g:0},
+ {n:'Rent Due',t:'RENT',x:'brokebuthappy',c:'#ff4b3e',e:'🏠',mc:9400,ch:22.8,vol:5400,h:73,age:'3h',w:41,g:0},
+ {n:'Boba Run',t:'BOBA',x:'tea_time_tia',c:'#ff5fa8',e:'🧋',mc:7700,ch:1.9,vol:820,h:38,age:'5h',w:19,g:0},
+ {n:'Concert Tix',t:'TIX',x:'frontrowfin',c:'#7a5cff',e:'🎟️',mc:31200,ch:9.7,vol:6100,h:142,age:'1d',w:204,g:0},
+ {n:'Dog Treats',t:'WOOF',x:'goodboyjax',c:'#ffd23f',e:'🐶',mc:5600,ch:-8.4,vol:400,h:22,age:'1w',w:7,g:0},
+ {n:'Split The Bill',t:'SPLIT',x:'dinnerclub',c:'#0a1a33',e:'🧾',mc:21800,ch:4.4,vol:2700,h:88,age:'4d',w:120,g:0}];
+var filt='all',view='list'==store('view')?'list':'grid',q='';
+function art(c,co){var x=c.getContext('2d'),W=c.width,H=c.height;var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,co.c);g.addColorStop(1,shade(co.c,-0.25));x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(255,255,255,.14)';for(var i=0;i<6;i++){x.beginPath();x.arc(W*(0.1+i*0.18),H*(0.2+(i%2)*0.6),18+i*4,0,7);x.fill()}
+  x.font='80px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#000';x.fillText(co.e,W/2,H/2+4)}
+function shade(h,f){var n=parseInt(h.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255;function m(v){return Math.max(0,Math.min(255,Math.round(v*(1+f))))}return 'rgb('+m(r)+','+m(g)+','+m(b)+')'}
+function coinEl(co,prev){var d=document.createElement('div');d.className='coin';var pct=Math.min(100,co.mc/69000*100);
+  d.innerHTML='<div class="art"><canvas width="320" height="236"></canvas><span class="hol">👤 '+co.h+'</span>'+(co.g?'<span class="grad">Graduated</span>':'')+'</div><div class="bd"><h3><span>'+esc(co.n)+'</span><small>'+co.age+'</small></h3><span class="tk">$'+esc(co.t)+'</span><div class="stats"><div><span>MC</span><b>'+money(co.mc)+'</b></div><div><span>4h vol</span><b class="'+(co.ch>=0?'up':'dn')+'">'+money(co.vol)+' '+(co.ch>=0?'+':'')+co.ch.toFixed(1)+'%</b></div></div><div class="bar" title="Bonding curve progress"><i style="width:'+pct.toFixed(0)+'%"></i></div><div class="rec"><span class="av" style="background:'+COLORS[(co.x.length)%COLORS.length]+'">'+esc(co.x[0].toUpperCase())+'</span><b>@'+esc(co.x)+'</b><span class="w">'+money(co.w)+' waiting</span></div></div>';
+  art(d.querySelector('canvas'),co);if(!prev)d.addEventListener('click',function(){toast('Coin pages open at launch. This one is a sample.')});return d}
+var FIL=[['all','All'],['trend','🔥 Trending'],['grad','⏳ Graduate soon'],['new','✨ New'],['fees','💸 Fees waiting']];
+(function(){var F=$('#filters');FIL.forEach(function(f){var b=document.createElement('button');b.type='button';b.className='f'+(f[0]==='all'?' on':'');b.innerHTML=f[1]+(f[0]==='all'?' <em>'+COINS.length+'</em>':'');b.addEventListener('click',function(){filt=f[0];$$('#filters .f').forEach(function(z){z.classList.toggle('on',z===b)});renderCoins()});F.appendChild(b)});var s=document.createElement('input');s.className='srch';s.placeholder='Search coins or X accounts';s.setAttribute('aria-label','Search coins');s.addEventListener('input',function(){q=s.value.trim().toLowerCase();renderCoins()});F.appendChild(s)})();
+function ageH(a){var n=parseFloat(a);return a.slice(-1)==='h'?n:a.slice(-1)==='d'?n*24:n*168}
+function renderCoins(){var L=COINS.filter(function(c){return !q||(c.n+' '+c.t+' '+c.x).toLowerCase().indexOf(q)>=0});
+  if(filt==='trend')L.sort(function(a,b){return b.ch-a.ch});if(filt==='grad')L=L.filter(function(c){return !c.g}).sort(function(a,b){return b.mc-a.mc});if(filt==='new')L.sort(function(a,b){return ageH(a.age)-ageH(b.age)});if(filt==='fees')L.sort(function(a,b){return b.w-a.w});
+  var G=$('#coinGrid');G.className='coins'+(view==='list'?' list':'');G.innerHTML='';if(!L.length){G.innerHTML='<div class="empty">No coins match that search.</div>';return}L.forEach(function(c){G.appendChild(coinEl(c))})}
+$$('#vtog button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===view);b.addEventListener('click',function(){view=b.getAttribute('data-v');store('view',view);$$('#vtog button').forEach(function(z){z.classList.toggle('on',z===b)});renderCoins()})});
+$('#refresh').addEventListener('click',function(){COINS.forEach(function(c){var d=(Math.random()-0.45)*0.06;c.mc=Math.max(3000,c.mc*(1+d));c.ch=+(c.ch+d*100).toFixed(1);c.vol=Math.max(100,c.vol*(1+d*2));c.w+=Math.round(Math.random()*6)});renderCoins();renderLB();toast('Refreshed (sample data)')});
+renderCoins();
+
+/* ================= TICKER ================= */
+(function(){var h='';for(var k=0;k<2;k++)COINS.forEach(function(c){h+='<span class="it"><span class="av" style="width:22px;height:22px;font-size:11px;background:'+c.c+'">'+c.e+'</span><b>$'+c.t+'</b><em>'+money(c.mc)+'</em><span style="color:'+(c.ch>=0?'#18c26a':'#ff4b3e')+';font-weight:700">'+(c.ch>=0?'▲':'▼')+Math.abs(c.ch).toFixed(1)+'%</span><em>fees to @'+c.x+'</em></span>'});$('#tick').innerHTML=h})();
+
+/* ================= LEADERBOARD ================= */
+function renderLB(){var L=COINS.slice().sort(function(a,b){return b.mc-a.mc}).slice(0,4);$('#lb').innerHTML=L.map(function(c,i){return '<div class="r"><span class="n">'+(i+1)+'</span><span class="av" style="width:28px;height:28px;font-size:13px;background:'+c.c+'">'+c.e+'</span>$'+c.t+'<b>'+money(c.mc)+'</b></div>'}).join('')}renderLB();
+
+/* ================= PHONE ANIMATION ================= */
+var ph=0,phAmt=312,phTr=1284;setInterval(function(){phAmt+=Math.random()*3;phTr+=Math.ceil(Math.random()*3);$('#phAmt').textContent='$'+Math.floor(phAmt);$('#phBtnAmt').textContent='$'+Math.floor(phAmt);$('#phSub').textContent='from '+phTr.toLocaleString()+' trades this week'},1400);
+$('#phClaim').addEventListener('click',function(e){confetti(e.clientX,e.clientY);toast('Claiming opens at launch. This is a preview.')});
+
+/* ================= TXN + CALC ================= */
+var txA=450.23;setInterval(function(){txA+=Math.random()*2;$('#txAmt').textContent='+ $'+txA.toFixed(2);var d=new Date();$('#txTime').textContent='Today at '+d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})},2000);
+function calc(){var v=+$('#volR').value,r=+$('#rateR').value;$('#volV').textContent='$'+v.toLocaleString();$('#rateV').textContent=r.toFixed(2)+'%';var d=v*r/100;$('#calcOut').textContent='$'+Math.round(d).toLocaleString()+' / day · $'+Math.round(d*30).toLocaleString()+' / mo'}
+$('#volR').addEventListener('input',calc);$('#rateR').addEventListener('input',calc);calc();
+$('#claimBtn').addEventListener('click',function(e){if(CONFIG.launchUrl){window.open(CONFIG.launchUrl,'_blank','noopener');return}confetti(e.clientX,e.clientY);toast('Claiming opens at launch, announced on X.')});
+
+/* ================= FEE FEED ================= */
+var NAMES=['mia_codes','tonyslices','vanlifejess','brokebuthappy','tea_time_tia','frontrowfin','goodboyjax','dinnerclub','satoshi_sam','luna.eth','degen_dana','chartchad'];
+var NOTES=['for the vibes','rent is paid lol','gas money','pizza friday','tickets secured','coffee on the chart','trip fund +1','treats for the pup','boba squad','dinner split','new keyboard','concert night'];
+function feedItem(){var a=NAMES[Math.floor(Math.random()*NAMES.length)],co=COINS[Math.floor(Math.random()*COINS.length)],amt=(0.5+Math.random()*24),em=EMO[Math.floor(Math.random()*EMO.length)];var d=document.createElement('div');d.className='fi';
+  d.innerHTML='<span class="av" style="background:'+co.c+'">'+co.e+'</span><div class="t"><b>$'+co.t+'</b> traders paid <b>@'+co.x+'</b><p>'+em+' '+NOTES[Math.floor(Math.random()*NOTES.length)]+'</p><small>just now · 🌐</small><div class="rx"><button type="button">❤️ <span>'+Math.floor(Math.random()*9)+'</span></button><button type="button">💬 '+Math.floor(Math.random()*4)+'</button></div></div><span class="am">+$'+amt.toFixed(2)+'</span>';
+  var hb=d.querySelector('.rx button');hb.addEventListener('click',function(){hb.classList.toggle('on');var s=hb.querySelector('span');s.textContent=+s.textContent+(hb.classList.contains('on')?1:-1)});return d}
+var fA=$('#feedA'),fB=$('#feedB');for(var i=0;i<5;i++){fA.appendChild(feedItem());fB.appendChild(feedItem())}
+var flip=0;setInterval(function(){if(!vis.feed)return;var col=flip++%2?fA:fB;col.prepend(feedItem());while(col.children.length>8)col.lastChild.remove()},2200);
+
+/* ================= LAUNCH BUILDER ================= */
+var bc=store('bc')||'#4bb0ff';try{var sv=JSON.parse(store('builder')||'null');if(sv){$('#bName').value=sv.n;$('#bTick').value=sv.t;$('#bX').value=sv.x;$('#bBuy').value=sv.b}}catch(e){}
+(function(){var S=$('#bSw');COLORS.forEach(function(c){var b=document.createElement('button');b.type='button';b.style.background=c;b.setAttribute('aria-label','Color '+c);if(c===bc)b.className='on';b.addEventListener('click',function(){bc=c;store('bc',c);$$('#bSw button').forEach(function(z){z.classList.toggle('on',z===b)});prev()});S.appendChild(b)})})();
+function prev(){var n=$('#bName').value.trim()||'My Coin',t=($('#bTick').value.trim()||'COIN').replace(/^\$/,'').toUpperCase(),x=($('#bX').value.trim()||'yourfriend').replace(/^@/,'');
+  var co={n:n,t:t,x:x,c:bc,e:EMO[(n.length+t.length)%EMO.length],mc:3000,ch:0,vol:0,h:1,age:'now',w:0,g:0};var P=$('#prevCard');P.innerHTML='';P.appendChild(coinEl(co,true));$('#pvX').textContent='@'+x;$('#pvAv').textContent=x[0].toUpperCase();$('#pvAv').style.background=bc;
+  store('builder',JSON.stringify({n:$('#bName').value,t:$('#bTick').value,x:$('#bX').value,b:$('#bBuy').value}))}
+['#bName','#bTick','#bX','#bBuy'].forEach(function(s){$(s).addEventListener('input',prev)});prev();
+$('#bLaunch').addEventListener('click',function(e){if(CONFIG.launchUrl){window.open(CONFIG.launchUrl,'_blank','noopener');return}confetti(e.clientX,e.clientY);toast('Launching opens with $VEMPAD. Your coin preview is saved.')});
+
+/* ================= FAQ ================= */
+var FAQ=[["Where do a coin's creator fees go?","pump.fun pays a creator fee on every buy and sell. On VemPad coins that fee is set aside for the X account named at launch, on the bonding curve and after the coin graduates to PumpSwap. Each coin page shows its lifetime fees and how much is waiting to be claimed."],
+ ['How does the X account get the fees into Venmo?','The account’s owner signs in with X on VemPad and claims. VemPad converts the fees and sends them on to the Venmo they choose. VemPad never asks for a Venmo password. Supported payout routes are confirmed at launch.'],
+ ['What does VemPad charge?','A small share of creator fees keeps the lights on. The exact split is posted at launch, before any coin goes live.'],
+ ['What if the account never claims?','The fees stay held for that account. They don’t go to anyone else, and the coin page shows exactly how much is waiting.'],
+ ['Can the fee recipient be changed later?','No. The X account is locked when the coin launches. Nobody can change it, including VemPad.'],
+ ['Do I keep the coins from my dev buy?','Yes. Your dev buy is yours. Only the creator fees go to the X account you picked.'],
+ ['Is VemPad affiliated with Venmo, PayPal or X?','No. VemPad is an independent project. It isn’t affiliated with, endorsed by or sponsored by PayPal, Inc., Venmo or X Corp.']];
+(function(){var L=$('#faqList');FAQ.forEach(function(f,i){var d=document.createElement('div');d.className='q'+(i===0?' open':'');d.innerHTML='<button type="button">'+f[0]+'<i>+</i></button><div class="a">'+f[1]+'</div>';d.querySelector('button').addEventListener('click',function(){d.classList.toggle('open')});L.appendChild(d)})})();
+
+/* ================= CONFETTI ================= */
+var cf=$('#confetti'),cx=cf.getContext('2d'),bits=[],cfOn=false;function sizeCf(){cf.width=innerWidth;cf.height=innerHeight}sizeCf();addEventListener('resize',sizeCf);
+function confetti(x,y){for(var i=0;i<70;i++)bits.push({x:x,y:y,vx:(Math.random()-0.5)*12,vy:-Math.random()*12-3,c:COLORS[Math.floor(Math.random()*COLORS.length)],r:Math.random()*6.28,s:4+Math.random()*5,l:1});if(!cfOn){cfOn=true;requestAnimationFrame(cfTick)}}
+function cfTick(){cx.clearRect(0,0,cf.width,cf.height);bits=bits.filter(function(b){b.vy+=0.4;b.x+=b.vx;b.y+=b.vy;b.r+=0.2;b.l-=0.012;cx.save();cx.translate(b.x,b.y);cx.rotate(b.r);cx.globalAlpha=Math.max(0,b.l);cx.fillStyle=b.c;cx.fillRect(-b.s/2,-b.s/4,b.s,b.s/2);cx.restore();return b.l>0&&b.y<cf.height+20});if(bits.length)requestAnimationFrame(cfTick);else{cfOn=false;cx.clearRect(0,0,cf.width,cf.height)}}
+
+/* ================= LINKS + WALLET ================= */
+function wireX(a){if(!a)return;if(CONFIG.xUrl)a.href=CONFIG.xUrl;else{a.removeAttribute('target');a.addEventListener('click',function(e){e.preventDefault();toast('Our X link drops here soon. The launch is posted there.')})}}
+['#xChip','#xContact','#xFoot'].forEach(function(s){wireX($(s))});
+if(CONFIG.xHandle){$('#xHandleTxt').textContent=CONFIG.xHandle;$('#caTxt').textContent='launch posted on '+CONFIG.xHandle}
+if(CONFIG.ca){$('#caTxt').textContent=CONFIG.ca.slice(0,6)+'…'+CONFIG.ca.slice(-8);$('#caTxt').parentElement.style.cursor='pointer';$('#caTxt').parentElement.addEventListener('click',function(){(navigator.clipboard?navigator.clipboard.writeText(CONFIG.ca):Promise.reject()).then(function(){toast('Contract address copied')}).catch(function(){})})}
+$('#walletBtn').addEventListener('click',function(){var w=window,p=(w.phantom&&w.phantom.solana)||(w.solflare&&w.solflare.isSolflare&&w.solflare)||(w.backpack&&w.backpack.solana)||w.solana;if(!p){toast('No Solana wallet found. Install Phantom, Solflare or Backpack.');return}Promise.resolve(p.connect()).then(function(r){var a=((r&&r.publicKey)||p.publicKey).toString();$('#walletBtn').textContent=a.slice(0,4)+'…'+a.slice(-4);toast('Connected read-only. Nothing to sign.')}).catch(function(){toast('Wallet request closed.')})});
+
+var vis={feed:false};if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){vis.feed=e.isIntersecting})}).observe($('#feed-sec'))}else vis.feed=true;
+})();
+</script>
+</body>
+</html>
